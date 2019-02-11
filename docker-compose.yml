@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  web:
+    image: nginx:alpine
+    restart: always
+    volumes:
+      - .:/app
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  php:
+    build: docker/php
+    restart: always
+    depends_on:
+      - web
+      - mysql
+    volumes:
+      - .:/app
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+
+  mysql:
+    image: mysql:5
+    restart: always
+    command: mysqld --sql_mode=""
+    volumes:
+      - ./docker/mysql/gmail.sql:/docker-entrypoint-initdb.d/gmail.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret_pass
+      - MYSQL_DATABASE=gmail
