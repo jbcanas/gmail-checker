@@ -6,6 +6,7 @@ use App\Message;
 use Google_Client;
 use Google_Service_Gmail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Twilio\Rest\Client;
 
 class GetGmail extends Command
@@ -63,7 +64,7 @@ class GetGmail extends Command
                 }
             }
 
-            if ($notify) $this->sendMessage();
+            if ($notify) $this->sendMessage($id);
         }
     }
 
@@ -116,7 +117,7 @@ class GetGmail extends Command
         return $client;
     }
 
-    private function sendMessage()
+    private function sendMessage($id)
     {
         $sid    = env('TWILIO_SID');
         $token  = env('TWILIO_TOKEN');
@@ -128,5 +129,6 @@ class GetGmail extends Command
             );
 
         $this->info($message->sid);
+        Log::info($id);
     }
 }
